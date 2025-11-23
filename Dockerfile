@@ -1,40 +1,22 @@
-FROM node:25-alpine AS build
-
-# Обновляем системные пакеты Alpine, чтобы применять патчи безопасности
-RUN apk update && apk upgrade --no-cache
-
-# Установите рабочую директорию
+FROM node:22-alpine AS build
 WORKDIR /app
-
-# Копируйте файлы package и установите зависимости
 COPY package*.json ./
+COPY prisma ./prisma/
 RUN npm install
-
-# Копируйте остальные файлы проекта
+RUN npx prisma generate
 COPY . .
+RUN npm run build
 
-# Соберите NestJS проект (предполагается, что 'npm run build' создаёт папку 'dist')
-FROM node:25-alpine
-
-# Обновляем системные пакеты Alpine, чтобы применять патчи безопасности
-RUN apk update && apk upgrade --no-cache
-
-# Установите рабочую директорию
+FROM node:22-alpine
 WORKDIR /app
-
-# Копируйте только файлы package.json для установки продакшн-зависимостей
 COPY package*.json ./
-# Устанавливаем только зависимости, необходимые для запуска (без devDependencies)
-RUN npm install --only=production
-COPY package*.json ./
-# Устанавливаем только зависимости, необходимые для запуска (без devDependencies)
 RUN npm install --only=production
 
-# Копируйте собранный код из стадии 'build'
+COPY --from=build /app/generated/.prisma ./generated/.prisma
+COPY --from=build /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=build /app/dist ./dist
+COPY --from=build /app/prisma ./prisma
 
-# Порт, который слушает NestJS (внутри контейнера)
-EXPOSE 80
+EXPOSE 3000
 
-# Команда запуска (предполагается, что у вас есть 'node dist/main.js' или аналог)
-CMD [ "node", "dist/main" ]
+CMD [ "sh", "-c", "npx prisma migrate deploy && node dist/main" ]
