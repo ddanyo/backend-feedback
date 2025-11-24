@@ -6,14 +6,6 @@ import { Prisma, feedbacks_table } from '../../generated/prisma';
 export class DatabaseService {
   constructor(private prisma: PrismaService) {}
 
-  //   async findFeedback(
-  //     feedbackWhereUniqueInput: Prisma.feedbacks_tableWhereUniqueInput,
-  //   ): Promise<feedbacks_table | null> {
-  //     return this.prisma.feedbacks_table.findUnique({
-  //       where: feedbackWhereUniqueInput,
-  //     });
-  //   }
-
   async createFeedback(
     data: Prisma.feedbacks_tableCreateInput,
   ): Promise<feedbacks_table> {
