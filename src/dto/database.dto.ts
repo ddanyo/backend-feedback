@@ -1,4 +1,6 @@
 export class CreateDatabaseDto {
-  rating: number;
-  feedback_text?: string;
+    constructor(
+        public readonly rating: number,
+        public readonly feedback_text?: string,
+    ) {}
 }
