@@ -26,23 +26,24 @@ export class DatabaseService {
             where.feedback_text = { contains: search, mode: 'insensitive' };
         }
 
-        let orderBy: Prisma.feedbacks_tableOrderByWithRelationInput = {
-            date_time: 'desc',
-        };
+        let orderBy: Prisma.feedbacks_tableOrderByWithRelationInput[] = [
+            { date_time: 'desc' },
+            { id: 'desc' },
+        ];
 
         switch (sortBy) {
             case 'oldest':
-                orderBy = { date_time: 'asc' };
+                orderBy = [{ date_time: 'asc' }, { id: 'asc' }];
                 break;
             case 'rating_high':
-                orderBy = { rating: 'desc' };
+                orderBy = [{ rating: 'desc' }, { id: 'asc' }];
                 break;
             case 'rating_low':
-                orderBy = { rating: 'asc' };
+                orderBy = [{ rating: 'asc' }, { id: 'asc' }];
                 break;
             case 'newest':
             default:
-                orderBy = { date_time: 'desc' };
+                orderBy = [{ date_time: 'desc' }, { id: 'desc' }];
                 break;
         }
 
