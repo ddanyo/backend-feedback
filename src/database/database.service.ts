@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Prisma, feedbacks_table } from '../../generated/prisma';
+import { FeedbacksResponse } from '../dto/feedbacks.dto';
 
 @Injectable()
 export class DatabaseService {
@@ -19,7 +20,7 @@ export class DatabaseService {
         take?: number;
         search?: string;
         sortBy?: string;
-    }): Promise<feedbacks_table[]> {
+    }): Promise<FeedbacksResponse> {
         const { skip, take, search, sortBy } = params;
         const where: Prisma.feedbacks_tableWhereInput = {};
         if (search) {
@@ -47,12 +48,24 @@ export class DatabaseService {
                 break;
         }
 
-        return this.prisma.feedbacks_table.findMany({
-            skip,
-            take,
-            where,
-            orderBy,
-        });
+        const [items, total] = await this.prisma.$transaction([
+            this.prisma.feedbacks_table.findMany({
+                skip,
+                take,
+                where,
+                orderBy,
+            }),
+            this.prisma.feedbacks_table.count({ where }),
+        ]);
+
+        const limit = take || total || 1;
+        const totalPages = Math.ceil(total / limit);
+
+        return {
+            items,
+            total,
+            totalPages,
+        };
     }
 
     async updateFeedback(params: {

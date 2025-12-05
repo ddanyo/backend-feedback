@@ -1,6 +1,7 @@
 import { IsOptional, IsInt, Min, Max, IsString, IsIn } from 'class-validator';
 import { Type } from 'class-transformer';
 import { FeedbackSort } from '../constans/FeedbackSort';
+import { feedbacks_table } from '../../generated/prisma';
 
 export type FeedbackSort = (typeof FeedbackSort)[keyof typeof FeedbackSort];
 
@@ -13,7 +14,7 @@ export class GetFeedbacksDto {
 
     @IsOptional()
     @IsInt()
-    @Min(2)
+    @Min(5)
     @Max(100)
     @Type(() => Number)
     take?: number;
@@ -26,4 +27,10 @@ export class GetFeedbacksDto {
     @IsString()
     @IsIn(['newest', 'oldest', 'rating_high', 'rating_low'])
     sortBy?: FeedbackSort;
+}
+
+export class FeedbacksResponse {
+    items: feedbacks_table[];
+    total: number;
+    totalPages: number;
 }

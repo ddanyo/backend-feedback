@@ -11,6 +11,7 @@ import {
 import { DatabaseService } from './database.service';
 import { CreateDatabaseDto } from '../dto/database.dto';
 import { feedbacks_table } from '../../generated/prisma';
+import { FeedbacksResponse } from '../dto/feedbacks.dto';
 import { GetFeedbacksDto } from '../dto/feedbacks.dto';
 
 @Controller('api')
@@ -20,7 +21,7 @@ export class DatabaseController {
     @Get()
     async getFeedbacks(
         @Query() dto: GetFeedbacksDto,
-    ): Promise<feedbacks_table[]> {
+    ): Promise<FeedbacksResponse> {
         return this.databaseService.readFeedbacks(dto);
     }
 
