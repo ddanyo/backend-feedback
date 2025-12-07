@@ -1,6 +1,8 @@
+import { IsInt, IsString } from 'class-validator';
+
 export class CreateDatabaseDto {
-    constructor(
-        public readonly rating: number,
-        public readonly feedback_text?: string,
-    ) {}
+    @IsInt()
+    rating: number;
+    @IsString()
+    feedback_text?: string;
 }
