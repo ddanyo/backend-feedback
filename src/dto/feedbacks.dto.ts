@@ -5,6 +5,13 @@ import { feedbacks_table } from '../../generated/prisma';
 
 export type FeedbackSort = (typeof FeedbackSort)[keyof typeof FeedbackSort];
 
+export class CreateDatabaseDto {
+    @IsInt()
+    rating: number;
+    @IsString()
+    feedback_text?: string;
+}
+
 export class GetFeedbacksDto {
     @IsOptional()
     @IsInt()

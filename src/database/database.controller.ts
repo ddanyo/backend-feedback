@@ -9,7 +9,7 @@ import {
     Query,
 } from '@nestjs/common';
 import { DatabaseService } from './database.service';
-import { CreateDatabaseDto } from '../dto/database.dto';
+import { CreateDatabaseDto } from '../dto/feedbacks.dto';
 import { feedbacks_table } from '../../generated/prisma';
 import { FeedbacksResponse } from '../dto/feedbacks.dto';
 import { GetFeedbacksDto } from '../dto/feedbacks.dto';
