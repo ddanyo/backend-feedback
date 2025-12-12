@@ -1,5 +1,5 @@
 import { IsOptional, IsInt, Min, Max, IsString, IsIn } from 'class-validator';
-import { Type } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import { FeedbackSort } from '../constans/FeedbackSort';
 import { feedbacks_table } from '../../generated/prisma';
 
@@ -34,6 +34,14 @@ export class GetFeedbacksDto {
     @IsString()
     @IsIn(['newest', 'oldest', 'rating_high', 'rating_low'])
     sortBy?: FeedbackSort;
+
+    @IsOptional()
+    @Transform(({ value }) => value === 'true')
+    caseSensitive?: boolean;
+
+    @IsOptional()
+    @Transform(({ value }) => value === 'true')
+    wholeWord?: boolean;
 }
 
 export class FeedbacksResponse {

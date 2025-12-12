@@ -20,11 +20,16 @@ export class DatabaseService {
         take?: number;
         search?: string;
         sortBy?: string;
+        caseSensitive?: boolean;
+        wholeWord?: boolean;
     }): Promise<FeedbacksResponse> {
-        const { skip, take, search, sortBy } = params;
+        const { skip, take, search, sortBy, caseSensitive, wholeWord } = params;
         const where: Prisma.feedbacks_tableWhereInput = {};
         if (search) {
-            where.feedback_text = { contains: search, mode: 'insensitive' };
+            where.feedback_text = {
+                contains: search,
+                mode: caseSensitive === true ? undefined : 'insensitive',
+            };
         }
 
         let orderBy: Prisma.feedbacks_tableOrderByWithRelationInput[] = [
