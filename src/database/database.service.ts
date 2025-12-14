@@ -3,6 +3,10 @@ import { PrismaService } from '../prisma.service';
 import { Prisma, feedbacks_table } from '../../generated/prisma';
 import { FeedbacksResponse } from '../dto/feedbacks.dto';
 
+function prepareSearchString(input: string): string {
+    return input.trim().split(/\s+/).join(' & ');
+}
+
 @Injectable()
 export class DatabaseService {
     constructor(private prisma: PrismaService) {}
@@ -26,10 +30,27 @@ export class DatabaseService {
         const { skip, take, search, sortBy, caseSensitive, wholeWord } = params;
         const where: Prisma.feedbacks_tableWhereInput = {};
         if (search) {
-            where.feedback_text = {
-                contains: search,
-                mode: caseSensitive === true ? undefined : 'insensitive',
-            };
+            if (wholeWord) {
+                const searchConditions: Prisma.feedbacks_tableWhereInput[] = [
+                    {
+                        feedback_text: {
+                            search: prepareSearchString(search),
+                        },
+                    },
+                ];
+                searchConditions.push({
+                    feedback_text: {
+                        contains: search,
+                        mode: caseSensitive ? undefined : 'insensitive',
+                    },
+                });
+                where.AND = searchConditions;
+            } else {
+                where.feedback_text = {
+                    contains: search,
+                    mode: caseSensitive ? undefined : 'insensitive',
+                };
+            }
         }
 
         let orderBy: Prisma.feedbacks_tableOrderByWithRelationInput[] = [
