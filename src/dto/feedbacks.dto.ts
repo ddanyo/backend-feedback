@@ -21,8 +21,8 @@ export class GetFeedbacksDto {
 
     @IsOptional()
     @IsInt()
-    @Min(5)
-    @Max(100)
+    @Min(1)
+    @Max(500)
     @Type(() => Number)
     take?: number;
 
