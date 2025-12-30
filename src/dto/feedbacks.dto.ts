@@ -3,8 +3,7 @@ import { Transform, Type } from 'class-transformer';
 import { FeedbackSort } from '../constans/FeedbackSort';
 import { feedbacks_table } from '../../generated/prisma';
 
-export type FeedbackSort = (typeof FeedbackSort)[keyof typeof FeedbackSort];
-
+type ValueOf<T> = T[keyof T];
 export class CreateDatabaseDto {
     @IsInt()
     rating: number;
@@ -33,7 +32,7 @@ export class GetFeedbacksDto {
     @IsOptional()
     @IsString()
     @IsIn(['newest', 'oldest', 'rating_high', 'rating_low'])
-    sortBy?: FeedbackSort;
+    sortBy?: ValueOf<typeof FeedbackSort>;
 
     @IsOptional()
     @Transform(({ value }) => value === 'true')
