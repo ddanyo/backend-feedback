@@ -23,7 +23,7 @@ services:
 
     backend:
         container_name: fs-backend-container
-        image: fs-backend:0.0.1
+        image: fs-backend-image
         build:
             context: .
             dockerfile: Dockerfile
