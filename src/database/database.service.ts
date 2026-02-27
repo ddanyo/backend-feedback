@@ -31,20 +31,25 @@ export class DatabaseService {
         const where: Prisma.feedbacks_tableWhereInput = {};
         if (search) {
             if (wholeWord) {
-                const searchConditions: Prisma.feedbacks_tableWhereInput[] = [
+                const searchVector = prepareSearchString(search);
+                const matchingRecords = await this.prisma.$queryRaw<
+                    { id: number }[]
+                >`
+                    SELECT id FROM "feedbacks_table" 
+                    WHERE to_tsvector('simple', coalesce(feedback_text, '')) @@ to_tsquery('simple', ${searchVector})
+                `;
+
+                const ids = matchingRecords.map((r) => r.id);
+
+                where.AND = [
+                    { id: { in: ids } },
                     {
                         feedback_text: {
-                            search: prepareSearchString(search),
+                            contains: search,
+                            mode: caseSensitive ? undefined : 'insensitive',
                         },
                     },
                 ];
-                searchConditions.push({
-                    feedback_text: {
-                        contains: search,
-                        mode: caseSensitive ? undefined : 'insensitive',
-                    },
-                });
-                where.AND = searchConditions;
             } else {
                 where.feedback_text = {
                     contains: search,

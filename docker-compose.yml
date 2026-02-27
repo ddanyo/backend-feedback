@@ -1,7 +1,7 @@
 services:
     postgres:
         image: postgres:17-alpine
-        container_name: fs-postgres-container
+        container_name: fs-postgres
         restart: always
         environment:
             POSTGRES_USER: ${DB_USER}
@@ -22,7 +22,7 @@ services:
             retries: 5
 
     backend:
-        container_name: fs-backend-container
+        container_name: fs-backend
         image: fs-backend-image
         build:
             context: .
@@ -32,7 +32,7 @@ services:
             postgres:
                 condition: service_healthy
         environment:
-            DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@fs-postgres-container:${DB_PORT}/${DB_NAME}?schema=public
+            DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@fs-postgres:${DB_PORT}/${DB_NAME}?schema=public
         env_file:
             - .env
         networks:
@@ -55,4 +55,4 @@ volumes:
 
 networks:
     feedback-system-network:
-        external: true
+        name: feedback-system-network
