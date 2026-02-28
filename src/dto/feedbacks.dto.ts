@@ -6,7 +6,7 @@ import { feedbacks_table } from '../../generated/prisma';
 type ValueOf<T> = T[keyof T];
 export class CreateDatabaseDto {
     @IsInt()
-    rating: number;
+    rating!: number;
     @IsString()
     feedback_text?: string;
 }
@@ -44,7 +44,7 @@ export class GetFeedbacksDto {
 }
 
 export class FeedbacksResponse {
-    items: feedbacks_table[];
-    total: number;
-    totalPages: number;
+    items!: feedbacks_table[];
+    total!: number;
+    totalPages!: number;
 }
