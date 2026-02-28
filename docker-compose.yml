@@ -13,6 +13,7 @@ services:
             - '5433:5432'
         volumes:
             - pg_data:/var/lib/postgresql/data
+            - ./test-data/dump.sql:/docker-entrypoint-initdb.d/init.sql:ro
         networks:
             - feedback-system-network
         healthcheck:
@@ -32,7 +33,7 @@ services:
             postgres:
                 condition: service_healthy
         environment:
-            DATABASE_URL: postgresql://${DB_USER}:${DB_PASSWORD}@fs-postgres:${DB_PORT}/${DB_NAME}?schema=public
+            - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@fs-postgres:5432/${DB_NAME}?schema=public
         env_file:
             - .env
         networks:
@@ -40,7 +41,7 @@ services:
 
     proxy:
         image: nginx:alpine
-        container_name: proxy-container
+        container_name: fs-proxy
         ports:
             - '2510:80'
         volumes:
