@@ -16,6 +16,9 @@ async function bootstrap() {
     const documentFactory = () => SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api/swagger', app, documentFactory, {
         jsonDocumentUrl: 'swagger/json',
+        swaggerOptions: {
+            supportedSubmitMethods: ['get'], // Разрешает кнопку "Try it out" только для GET запросов
+        },
     });
 
     await app.listen(process.env.PORT ?? 3000);
